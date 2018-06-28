@@ -11,8 +11,8 @@ def eat(earth_w, items):
                 items = item.item_remove(items, j)
                 earth_w =user_add(earth_w)
                 items = item.item_add(items)
-                break;
-    return earth_w, items
+                return 1
+    return 0
 
 def user_add(earth_w):
     earth_w.append([c.RECT_X, c.RECT_Y, 0])

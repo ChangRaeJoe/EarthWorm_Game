@@ -83,10 +83,29 @@ def dispMessage(text):
     pg.display.update()
     sleep(2)
 
+def menu():
+    global screen, score,speed
+    pg.draw.line(screen, c.RED, (c.WIDTH,0), (c.WIDTH, c.HEIGHT), 1)
+
+    score_str = "score: " + str(score)
+    time_str = "time: " + str(int(pg.time.get_ticks()/1000)) + "s"
+    speed_str = "speed: " + str(speed)
+    score_pos = (c.WIDTH + 10, 10)
+    time_pos = (c.WIDTH + 10, 30)
+    speed_pos = (c.WIDTH + 10, 50)
+
+    font = pg.font.Font('freesansbold.ttf', 15)
+    text = font.render(score_str, True, c.RED)
+    text2 = font.render(time_str, True, c.RED)
+    text3 = font.render(speed_str, True, c.RED)
+
+    screen.blit(text, score_pos)
+    screen.blit(text2, time_pos)
+    screen.blit(text3, speed_pos)
 if __name__ == '__main__':
     pg.init()
     pg.display.set_caption('EarthWorm Game()')
-    screen = pg.display.set_mode((c.WIDTH, c.HEIGHT))
+    screen = pg.display.set_mode((c.FULL_WIDTH, c.FULL_HEIGHT))
     clock = pg.time.Clock()
     init_x = 0
     init_y = 0
@@ -101,6 +120,7 @@ if __name__ == '__main__':
     #값들 변경
     smile = False
     speed = 0
+    score = 0
     while not smile:
         #키 동작
         for event in pg.event.get():
@@ -131,7 +151,7 @@ if __name__ == '__main__':
                 pre_y = earth_w[next][1]
                 earth_w[next][0], earth_w[next][1] = cur_x, cur_y
         #item을 먹었을때의 동작
-        user.eat(earth_w, items)
+        score += 10*user.eat(earth_w, items)
         #crashed
         if user.crash(earth_w):
             dispMessage('Crasheed!!')
@@ -140,6 +160,7 @@ if __name__ == '__main__':
         #print(speed)
         #화면그리기
         screen.fill(0)
+        menu()
         ##아이템 그리기
         for index, xy in enumerate(items):
             pg.draw.rect(screen, c.BLUE, (xy[0], xy[1], c.RECT_WIDTH, c.RECT_HEIGHT))
