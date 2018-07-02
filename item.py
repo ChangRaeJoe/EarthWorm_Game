@@ -1,6 +1,7 @@
 import pygame as pg
 from random import *
 import constants as c
+
 def item_init():
     items = []
     for i in range(0, 5):

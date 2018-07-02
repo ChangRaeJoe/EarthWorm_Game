@@ -27,6 +27,7 @@ def limit(xy):
     elif 0>y:
         y = 0
         tmp_key = edged()
+
     return (x, y, tmp_key)
 
 def auto_moved(box_one):
@@ -82,6 +83,7 @@ def dispMessage(text):
     screen.blit(TextSurf, TextRect)
     pg.display.update()
     sleep(2)
+    game_initing()
 
 def menu():
     global screen, score,speed
@@ -102,6 +104,24 @@ def menu():
     screen.blit(text, score_pos)
     screen.blit(text2, time_pos)
     screen.blit(text3, speed_pos)
+
+def game_initing():
+    global init_x, init_y, change_width, change_height, earth_w, items, smile, speed, score
+    init_x = 0
+    init_y = 0
+    change_width = 0
+    change_height = 0
+    # 지렁이 생성[x, y, direction]
+    earth_w = []
+    for i in range(0, 3):
+        earth_w.append([c.RECT_X, c.RECT_Y, 0])
+    # 아이템 생성
+    items = item.item_init()
+    # 값들 변경
+    smile = False
+    speed = 0
+    score = 0
+
 if __name__ == '__main__':
     pg.init()
     pg.display.set_caption('EarthWorm Game()')
@@ -121,6 +141,7 @@ if __name__ == '__main__':
     smile = False
     speed = 0
     score = 0
+    one = user.User(earth_w, items)
     while not smile:
         #키 동작
         for event in pg.event.get():
@@ -150,10 +171,11 @@ if __name__ == '__main__':
                 pre_x = earth_w[next][0]
                 pre_y = earth_w[next][1]
                 earth_w[next][0], earth_w[next][1] = cur_x, cur_y
+        one.set_data(earth_w, items)
         #item을 먹었을때의 동작
-        score += 10*user.eat(earth_w, items)
+        score += 10*one.eat()
         #crashed
-        if user.crash(earth_w):
+        if one.crash():
             dispMessage('Crasheed!!')
         #time attack - speed
         time_attack()
