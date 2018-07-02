@@ -8,10 +8,11 @@ class User:
         self.earth_w_init()
         self.items = items
         self. keys = keys
-
+        self.score = 0
 
     def earth_w_init(self):
         self.earth_w = []
+        self.score = 0
         for i in range(0, 3):
             self.earth_w.append([c.RECT_X, c.RECT_Y, 0])
 
@@ -36,16 +37,16 @@ class User:
 
     def crash(self):
         dots = []
-        if self.earth_w[0][2] == pg.K_RIGHT:
+        if self.earth_w[0][2] == self.keys[0]:
             dots.append([self.earth_w[0][0] + c.RECT_WIDTH, self.earth_w[0][1]])
             dots.append([self.earth_w[0][0] + c.RECT_WIDTH, self.earth_w[0][1] + c.RECT_HEIGHT])
-        elif self.earth_w[0][2] == pg.K_LEFT:
+        elif self.earth_w[0][2] == self.keys[1]:
             dots.append([self.earth_w[0][0], self.earth_w[0][1]])
             dots.append([self.earth_w[0][0], self.earth_w[0][1] + c.RECT_HEIGHT])
-        elif self.earth_w[0][2] == pg.K_UP:
+        elif self.earth_w[0][2] == self.keys[2]:
             dots.append([self.earth_w[0][0], self.earth_w[0][1]])
             dots.append([self.earth_w[0][0] + c.RECT_WIDTH, self.earth_w[0][1]])
-        elif self.earth_w[0][2] == pg.K_DOWN:
+        elif self.earth_w[0][2] == self.keys[3]:
             dots.append([self.earth_w[0][0] + c.RECT_WIDTH, self.earth_w[0][1] + c.RECT_HEIGHT])
             dots.append([self.earth_w[0][0], self.earth_w[0][1] + c.RECT_HEIGHT])
 
@@ -124,6 +125,10 @@ class User:
         return self.keys
     def set_item(self, item):
         self.items = item
+    def get_score(self):
+        return self.score
+    def set_score(self, score):
+        self.score = score
 
 
 

@@ -4,13 +4,13 @@ import item, user
 from time import sleep
 
 class Arena:
-    def __init__(self):
+    def __init__(self, num):
         pg.init()
         pg.display.set_caption('EarthWorm Game()')
         self.screen = pg.display.set_mode((c.FULL_WIDTH, c.FULL_HEIGHT))
         self.clock = pg.time.Clock()
         self.game_initing()
-
+        self.player_num = num
     def game_initing(self):
         self.init_x = 0
         self.init_y = 0
@@ -22,26 +22,28 @@ class Arena:
         # 값들 변경
         self.smile = False
         self.speed = 0
-        self.score = 0
 
-    def menu(self):
+    def menu(self, tmp_score):
         pg.draw.line(self.screen, c.RED, (c.WIDTH, 0), (c.WIDTH, c.HEIGHT), 1)
 
-        score_str = "score: " + str(self.score)
         time_str = "time: " + str(int(pg.time.get_ticks() / 1000)) + "s"
         speed_str = "speed: " + str(self.speed)
-        score_pos = (c.WIDTH + 10, 10)
-        time_pos = (c.WIDTH + 10, 30)
-        speed_pos = (c.WIDTH + 10, 50)
+        time_pos = (c.WIDTH + 10, c.HEIGHT - 20)
+        speed_pos = (c.WIDTH + 10, c.HEIGHT - 40)
 
         font = pg.font.Font('freesansbold.ttf', 15)
-        text = font.render(score_str, True, c.RED)
         text2 = font.render(time_str, True, c.RED)
         text3 = font.render(speed_str, True, c.RED)
 
-        self.screen.blit(text, score_pos)
         self.screen.blit(text2, time_pos)
         self.screen.blit(text3, speed_pos)
+        
+        for i in range(0, self.player_num):
+            score_str = "plyaer"+str(i)+"score: " + str(tmp_score[i])
+            score_pos = (c.WIDTH + 10, 15*(i+1))
+            text = font.render(score_str, True, c.RED)
+            self.screen.blit(text, score_pos)
+
 
     def textObj(self, text, font):
         textSurface = font.render(text, True, c.RED)
@@ -94,7 +96,7 @@ class Arena:
         return self.speed
 
 if __name__ == '__main__':
-    arena = Arena()
+    arena = Arena(c.PLAYER_NUM)
     screen = arena.get_screen()
     tmp_keys = [pg.K_RIGHT, pg.K_LEFT, pg.K_UP, pg.K_DOWN]
     tmp_keys2 = [pg.K_d, pg.K_a, pg.K_w, pg.K_s]
@@ -128,19 +130,24 @@ if __name__ == '__main__':
         # Moving: pre value->next value
         for i in range(0, len(player)):
             player[i].Moving(arena.get_speed())
+
+        tmp_score = []
         for i in range(0, len(player)):
             # Eating item
-            tmp_score = arena.get_score() + 10 * player[i].eat()
-            arena.set_score(tmp_score)
+            tmp_score.append( player[i].get_score() + 10 * player[i].eat() )
             # crashed
             if player[i].crash():
                 arena.dispMessage('Crasheed!!')
+                tmp_score.insert(i, 0)
+
+        for i in range(0, len(player)):
+            player[i].set_score(tmp_score[i])
 
         #time attack - speed
         arena.time_attack()
         #Drawing screen, items, eartwh_worm
         screen.fill(0)
-        arena.menu()
+        arena.menu(tmp_score)
         for index, xy in enumerate(items):
             pg.draw.rect(screen, c.BLUE, (xy[0], xy[1], c.RECT_WIDTH, c.RECT_HEIGHT))
 
